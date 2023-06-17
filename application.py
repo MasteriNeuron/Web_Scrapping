@@ -36,41 +36,53 @@ def index():
 
             filename = searchString + ".csv"
             with open(filename, "w", newline='', encoding='utf-8') as fw:
-                headers = ["Product", "Customer Name", "Rating", "Heading", "Comment"]
+                headers = ["Price","Product","Customer Name", "Rating","Heading","Comment"]
                 writer = csv.DictWriter(fw, fieldnames=headers)
                 writer.writeheader()
 
                 reviews = []
                 for commentbox in commentboxes:
                     try:
+                        price_element = flipkart_html.select('div._25b18c ._30jeq3')[0]
+                        price = price_element.text
+                    except:    
+                        price = 'There is no price'
+                    try:
+                        #name.encode(encoding='utf-8')
                         name = commentbox.div.div.find_all('p', {'class': '_2sc7ZR _2V5EHH'})[0].text
+
                     except:
                         name = 'No Name'
 
                     try:
+                        #rating.encode(encoding='utf-8')
                         rating = commentbox.div.div.div.div.text
+
+
                     except:
                         rating = 'No Rating'
 
                     try:
+                        #commentHead.encode(encoding='utf-8')
                         commentHead = commentbox.div.div.div.p.text
+
                     except:
                         commentHead = 'No Comment Heading'
-
                     try:
                         comtag = commentbox.div.div.find_all('div', {'class': ''})
+                        #custComment.encode(encoding='utf-8')
                         custComment = comtag[0].div.text
                     except Exception as e:
-                        print("Exception while creating dictionary: ", e)
+                        print("Exception while creating dictionary: ",e)
 
-                    mydict = {"Product": searchString, "Customer Name": name, "Rating": rating, "Heading": commentHead, "Comment": custComment}
+                    mydict = {"Price": price,"Product": searchString, "Customer Name": name, "Rating": rating, "Heading": commentHead,"Comment": custComment}
                     reviews.append(mydict)
-
+                   
                 writer.writerows(reviews)
 
                
             client = pymongo.MongoClient("mongodb+srv://Alonewinner:Alonewinner@cluster1.x8c5jdd.mongodb.net/?retryWrites=true&w=majority")
-            db = client['flipkart_scrap']
+            db = client['flipkart_scrap1']
             review_col = db['review_scrap_data']
             review_col.insert_many(reviews)
             return render_template('results.html', reviews=reviews[0:(len(reviews)-1)])
@@ -84,4 +96,4 @@ def index():
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8000, debug=True)
-	#app.run(debug=True)
+	#app.run(debug=True)    
