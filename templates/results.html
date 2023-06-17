@@ -21,6 +21,7 @@
 
    <table cellspacing="0">
       <tr>
+          <th>Price</th>
          <th>Product</th>
          <th>Name</th>
          <th>Rating</th>
@@ -29,10 +30,11 @@
       </tr>
          {% for review in reviews %}
       <tr>
+          <td>{{review['Price']}}</td>
           <td>{{review['Product']}}</td>
-         <td>{{review['Name']}}</td>
+         <td>{{review['Customer Name']}}</td>
          <td>{{review['Rating']}}</td>
-         <td>{{review['CommentHead']}}</td>
+         <td>{{review['Heading']}}</td>
          <td>{{review['Comment']}} </td>
        {% endfor %}
    </table>
